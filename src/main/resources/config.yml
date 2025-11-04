@@ -85,6 +85,8 @@ groups:
         allowPaintings: true
         allowItemFrames: false
         allowItemsInItemFrames: false
+        allowArmorStands: false
+        allowItemsInArmorStands: false
       equippable:
         allow: false
       firework_explosion:

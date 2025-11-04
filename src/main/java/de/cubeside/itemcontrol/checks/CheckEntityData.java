@@ -4,6 +4,7 @@ import de.cubeside.itemcontrol.ItemChecker;
 import de.cubeside.itemcontrol.config.GroupConfig;
 import de.cubeside.itemcontrol.util.ConfigUtil;
 import de.cubeside.nmsutils.nbt.CompoundTag;
+import de.cubeside.nmsutils.nbt.ListTag;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import java.util.Arrays;
@@ -24,7 +25,13 @@ public class CheckEntityData implements ComponentCheck {
 
     private boolean allowItemsInItemFrames;
 
+    private boolean allowArmorStands;
+
+    private boolean allowItemsInArmorStands;
+
     private static final Set<String> ALLOWED_ITEM_FRAME_KEYS = new HashSet<>(Arrays.asList("id", "ItemDropChance", "ItemRotation", "Invisible", "Fixed", "Silent", "Invulnerable", "Glowing", "Tags"));
+
+    private static final Set<String> ALLOWED_ARMOR_STAND_KEYS = new HashSet<>(Arrays.asList("id", "AbsorptionAmount", "Air", "ArmorItems", "active_effects", "attributes", "Brain", "CustomName", "CustomNameVisible", "data", "DeathTime", "DisabledSlots", "equipment", "fall_distance", "FallFlying", "Fire", "Glowing", "HasVisualFire", "HandItems", "Health", "HurtByTimestamp", "HurtTime", "Invisible", "Invulnerable", "Marker", "Motion", "NoBasePlate", "NoGravity", "OnGround", "Pose", "PortalCooldown", "Rotation", "ShowArms", "Silent", "Small", "Tags", "TicksFrozen"));
 
     @Override
     public NamespacedKey getComponentKey() {
@@ -38,6 +45,8 @@ public class CheckEntityData implements ComponentCheck {
         allowPaintings = ConfigUtil.getOrCreate(data, "allowPaintings", true);
         allowItemFrames = ConfigUtil.getOrCreate(data, "allowItemFrames", false);
         allowItemsInItemFrames = ConfigUtil.getOrCreate(data, "allowItemsInItemFrames", false);
+        allowArmorStands = ConfigUtil.getOrCreate(data, "allowArmorStands", false);
+        allowItemsInArmorStands = ConfigUtil.getOrCreate(data, "allowItemsInArmorStands", false);
     }
 
     @Override
@@ -98,6 +107,53 @@ public class CheckEntityData implements ComponentCheck {
                 }
                 return changed;
             }
+        }
+        if (material == Material.ARMOR_STAND && entityData != null) {
+            if (allowArmorStands) {
+                String id = entityData.getString("id");
+                if (id == null || !(id.equals("minecraft:armor_stand") || id.equals("armor_stand"))) {
+                    itemComponentsTag.remove(key);
+                    changed = true;
+                } else {
+                    for (String s : entityData.getAllKeys()) {
+                        if (s.equals("ArmorItems") || s.equals("HandItems") || s.equals("equipment")) {
+                            if (!allowItemsInArmorStands) {
+                                entityData.remove(s);
+                                changed = true;
+                            } else {
+                                ListTag itemList = entityData.getList(s);
+                                if (itemList != null) {
+                                    for (int i = itemList.size() - 1; i >= 0; i--) {
+                                        CompoundTag stack = itemList.getCompound(i);
+                                        if (stack == null) {
+                                            itemList.remove(i);
+                                            changed = true;
+                                        } else {
+                                            Boolean result = ItemChecker.filterItem(stack, group);
+                                            changed |= result != Boolean.FALSE;
+                                            if (result == null) {
+                                                itemList.remove(i);
+                                            }
+                                        }
+                                    }
+                                    if (itemList.isEmpty()) {
+                                        entityData.remove(s);
+                                        changed = true;
+                                    }
+                                } else {
+                                    entityData.remove(s);
+                                    changed = true;
+                                }
+                            }
+                        } else if (!ALLOWED_ARMOR_STAND_KEYS.contains(s)) {
+                            entityData.remove(s);
+                            changed = true;
+                        }
+                    }
+                }
+                return changed;
+            }
+
         }
         if (!allow) {
             itemComponentsTag.remove(key);
