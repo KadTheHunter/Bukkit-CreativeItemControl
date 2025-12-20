@@ -4,10 +4,8 @@ import de.cubeside.itemcontrol.ComponentExpansionLimiter;
 import de.cubeside.itemcontrol.config.GroupConfig;
 import de.cubeside.itemcontrol.util.ConfigUtil;
 import de.cubeside.nmsutils.nbt.CompoundTag;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -34,20 +32,19 @@ public abstract class BaseCheckName implements ComponentCheck {
             return false;
         }
         boolean changed = false;
-        String customNameJson = parentTag.getString(key);
-        if (customNameJson != null && allow) {
+        Component component = parentTag.getTextComponent(key);
+        if (component != null && allow) {
             try {
-                BaseComponent component = ComponentSerializer.deserialize(customNameJson);
                 if (!ComponentExpansionLimiter.checkExpansions(component, maxComponentExpansions)) {
                     parentTag.remove(key);
                     changed = true;
                 } else {
-                    String plain = ChatColor.stripColor(component.toLegacyText());
+                    String plain = PlainTextComponentSerializer.plainText().serialize(component);
                     if (plain.length() > maxLength) {
                         parentTag.remove(key);
                         changed = true;
                     } else if (!allowFormating) {
-                        parentTag.setString(key, ComponentSerializer.toString(new TextComponent(plain)));
+                        parentTag.setTextComponent(key, Component.text(plain));
                         changed = true;
                     }
                 }
