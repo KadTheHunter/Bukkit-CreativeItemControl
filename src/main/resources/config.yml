@@ -30,9 +30,13 @@ groups:
       - light
     allow_all_components: false
     components:
+      attack_range:
+        allow: false
       attribute_modifiers:
         allow_all: false
         allow: []
+        allow_modify_display: false
+        display_max_custom_name_length: 0
       banner_patterns:
         max_patterns: 6
       bees:
@@ -43,6 +47,10 @@ groups:
         allow: false
       block_state:
         allow: true
+      blocks_attacks:
+        allow: false
+      break_sound:
+        allow: false
       bucket_entity_data:
         allow: true
       can_break:
@@ -67,6 +75,8 @@ groups:
         max_length: 40
       damage_resistant:
         allow: false
+      damage_type:
+        allow: false
       death_protection:
         allow: false
         allow_sounds: false
@@ -78,7 +88,6 @@ groups:
         allow: false
       enchantments:
         allow_on_all_items: false
-        allow_hidden: false
         override_max_level: {}
       entity_data:
         allow: false
@@ -99,10 +108,6 @@ groups:
         allow: false
       glider:
         allow: false
-      hide_additional_tooltip:
-        allow: false
-      hide_tooltip:
-        allow: false
       instrument:
         allow_custom: false
       item_name:
@@ -110,6 +115,8 @@ groups:
         allow_formating: true
         max_length: 4000
       item_model:
+        allow: false
+      kinetic_weapon:
         allow: false
       lock:
         allow: false
@@ -129,10 +136,14 @@ groups:
         allow: false
       max_stack_size:
         allow: false
+      minimum_attack_charge:
+        allow: false
       note_block_sound:
         allow: false
       ominous_bottle_amplifier:
         allow: true
+      piercing_weapon:
+        allow: false
       pot_decorations:
         allow: true
       potion_contents:
@@ -142,7 +153,14 @@ groups:
         custom_name: false
         custom_name_allow_formating: false
         custom_name_max_length: 4000
+      potion_duration_scale:
+        allow: false
       profile:
+        allow: false
+        allowLocalTextureOverride: false
+      provides_banner_patterns:
+        allow: false
+      provides_trim_material:
         allow: false
       rarity:
         allow: false
@@ -154,23 +172,31 @@ groups:
         allow: false
       stored_enchantments:
         allow_on_all_items: false
-        allow_hidden: false
         override_max_level: {}
       suspicious_stew_effects:
         allow: true
         max_duration: 160
+      swing_animation:
+        allow: false
       tool:
+        allow: false
+      tooltip_display:
         allow: false
       tooltip_style:
         allow: false
       trim:
         allow: false
-        allow_hidden: false
       unbreakable:
         allow: false
       use_cooldown:
         allow: false
+      use_effects:
+        allow: false
       use_remainder:
+        allow: false
+      variants:
+        allow: true
+      weapon:
         allow: false
       writable_book_content:
         allow: false
@@ -188,11 +214,14 @@ groups:
       - structure_block
     allow_all_components: false
     components:
+      attack_range:
+        allow: true
       attribute_modifiers:
-        allow_hidden: true
         allow_all: false
         allow:
           - movement_speed
+        allow_modify_display: true
+        display_max_custom_name_length: 1000
       banner_patterns:
         max_patterns: 16
       bees:
@@ -202,6 +231,10 @@ groups:
       block_entity_data:
         allow: false
       block_state:
+        allow: true
+      blocks_attacks:
+        allow: true
+      break_sound:
         allow: true
       bucket_entity_data:
         allow: true
@@ -227,6 +260,8 @@ groups:
         max_length: 4000
       damage_resistant:
         allow: true
+      damage_type:
+        allow: true
       death_protection:
         allow: true
         allow_sounds: true
@@ -238,7 +273,6 @@ groups:
         allow: true
       enchantments:
         allow_on_all_items: true
-        allow_hidden: true
         override_max_level:
           protection: 4
       entity_data:
@@ -256,10 +290,6 @@ groups:
         allow: true
       glider:
         allow: true
-      hide_additional_tooltip:
-        allow: true
-      hide_tooltip:
-        allow: true
       instrument:
         allow_custom: false
       item_name:
@@ -267,6 +297,8 @@ groups:
         allow_formating: true
         max_length: 4000
       item_model:
+        allow: true
+      kinetic_weapon:
         allow: true
       lock:
         allow: true
@@ -286,9 +318,13 @@ groups:
         allow: true
       max_stack_size:
         allow: true
+      minimum_attack_charge:
+        allow: true
       note_block_sound:
         allow: true
       ominous_bottle_amplifier:
+        allow: true
+      piercing_weapon:
         allow: true
       pot_decorations:
         allow: true
@@ -299,7 +335,14 @@ groups:
         custom_name: true
         custom_name_allow_formating: true
         custom_name_max_length: 4000
+      potion_duration_scale:
+        allow: true
       profile:
+        allow: true
+        allowLocalTextureOverride: true
+      provides_banner_patterns:
+        allow: true
+      provides_trim_material:
         allow: true
       rarity:
         allow: true
@@ -311,24 +354,32 @@ groups:
         allow: true
       stored_enchantments:
         allow_on_all_items: true
-        allow_hidden: true
         override_max_level:
           protection: 4
       suspicious_stew_effects:
         allow: true
         max_duration: 160
+      swing_animation:
+        allow: true
       tool:
+        allow: true
+      tooltip_display:
         allow: true
       tooltip_style:
         allow: true
       trim:
         allow: true
-        allow_hidden: true
       unbreakable:
         allow: true
       use_cooldown:
         allow: true
+      use_effects:
+        allow: true
       use_remainder:
+        allow: true
+      variants:
+        allow: true
+      weapon:
         allow: true
       writable_book_content:
         allow: true
@@ -340,11 +391,14 @@ groups:
     forbidden_items: []
     allow_all_components: true
     components:
+      attack_range:
+        allow: true
       attribute_modifiers:
-        allow_hidden: true
-        allow_all: false
+        allow_all: true
         allow:
           - movement_speed
+        allow_modify_display: true
+        display_max_custom_name_length: 4000
       banner_patterns:
         max_patterns: 16
       bees:
@@ -354,6 +408,10 @@ groups:
       block_entity_data:
         allow: false
       block_state:
+        allow: true
+      blocks_attacks:
+        allow: true
+      break_sound:
         allow: true
       bucket_entity_data:
         allow: true
@@ -379,6 +437,8 @@ groups:
         max_length: 4000
       damage_resistant:
         allow: true
+      damage_type:
+        allow: true
       death_protection:
         allow: true
         allow_sounds: true
@@ -390,7 +450,6 @@ groups:
         allow: true
       enchantments:
         allow_on_all_items: true
-        allow_hidden: true
         override_max_level:
           protection: 4
       entity_data:
@@ -408,10 +467,6 @@ groups:
         allow: true
       glider:
         allow: true
-      hide_additional_tooltip:
-        allow: true
-      hide_tooltip:
-        allow: true
       instrument:
         allow_custom: false
       item_model:
@@ -420,6 +475,8 @@ groups:
         allow: true
         allow_formating: true
         max_length: 4000
+      kinetic_weapon:
+        allow: true
       lock:
         allow: true
       lodestone_tracker:
@@ -438,9 +495,13 @@ groups:
         allow: true
       max_stack_size:
         allow: true
+      minimum_attack_charge:
+        allow: true
       note_block_sound:
         allow: true
       ominous_bottle_amplifier:
+        allow: true
+      piercing_weapon:
         allow: true
       pot_decorations:
         allow: true
@@ -451,7 +512,14 @@ groups:
         custom_name: true
         custom_name_allow_formating: true
         custom_name_max_length: 4000
+      potion_duration_scale:
+        allow: true
       profile:
+        allow: true
+        allowLocalTextureOverride: true
+      provides_banner_patterns:
+        allow: true
+      provides_trim_material:
         allow: true
       rarity:
         allow: true
@@ -463,24 +531,32 @@ groups:
         allow: true
       stored_enchantments:
         allow_on_all_items: true
-        allow_hidden: true
         override_max_level:
           protection: 4
       suspicious_stew_effects:
         allow: true
         max_duration: 160
+      swing_animation:
+        allow: true
       tool:
+        allow: true
+      tooltip_display:
         allow: true
       tooltip_style:
         allow: true
       trim:
         allow: true
-        allow_hidden: true
       unbreakable:
         allow: true
       use_cooldown:
         allow: true
+      use_effects:
+        allow: true
       use_remainder:
+        allow: true
+      variants:
+        allow: true
+      weapon:
         allow: true
       writable_book_content:
         allow: true

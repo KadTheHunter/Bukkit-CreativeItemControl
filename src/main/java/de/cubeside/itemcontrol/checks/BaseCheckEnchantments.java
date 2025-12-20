@@ -20,14 +20,12 @@ public abstract class BaseCheckEnchantments implements ComponentCheck {
     private static final Registry<Enchantment> ENCHANTMENT_REGISTY = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
     protected HashMap<NamespacedKey, Integer> maxLevels = new HashMap<>();
-    protected boolean allowHidden;
     protected boolean allowOnAllItems;
 
     @Override
     public void loadConfig(ConfigurationSection section) {
         ConfigurationSection data = ConfigUtil.getOrCreateSection(section, getComponentKey().asMinimalString());
         allowOnAllItems = ConfigUtil.getOrCreate(data, "allow_on_all_items", false);
-        allowHidden = ConfigUtil.getOrCreate(data, "allow_hidden", false);
         maxLevels.clear();
         ENCHANTMENT_REGISTY.forEach(e -> maxLevels.put(e.getKey(), e.getMaxLevel()));
         ConfigurationSection overrideMapLevelSection = ConfigUtil.getOrCreateSection(data, "override_max_level");
@@ -58,37 +56,22 @@ public abstract class BaseCheckEnchantments implements ComponentCheck {
 
     @Override
     public boolean enforce(GroupConfig group, Material material, CompoundTag itemComponentsTag, String key) {
-        return enforceEnchantmentLevels(material, itemComponentsTag, key, false);
-    }
-
-    private boolean enforceEnchantmentLevels(Material material, CompoundTag itemComponentsTag, String key, boolean inLevelsTag) {
         boolean changed = false;
         CompoundTag compound = itemComponentsTag.getCompound(key);
         if (compound != null) {
             int minSize = 0;
             for (String e : new ArrayList<>(compound.getAllKeys())) {
-                if (!inLevelsTag && e.equals("levels")) {
-                    changed |= enforceEnchantmentLevels(material, compound, e, true);
-                } else if (!inLevelsTag && e.equals("show_in_tooltip")) {
-                    if (!allowHidden) {
-                        compound.remove(e);
-                        changed = true;
-                    } else {
-                        minSize++;
-                    }
+                NamespacedKey enchantmentKey = NamespacedKey.fromString(e);
+                Integer maxLevel = enchantmentKey == null ? null : maxLevels.get(enchantmentKey);
+                if (enchantmentKey == null || maxLevel == null) {
+                    compound.remove(e);
+                    changed = true;
                 } else {
-                    NamespacedKey enchantmentKey = NamespacedKey.fromString(e);
-                    Integer maxLevel = enchantmentKey == null ? null : maxLevels.get(enchantmentKey);
-                    if (enchantmentKey == null || maxLevel == null) {
+                    // real enchantment
+                    int level = compound.getInt(e);
+                    if (level > maxLevel || level < 1 || isInvalidOnItem(enchantmentKey, material)) {
                         compound.remove(e);
                         changed = true;
-                    } else {
-                        // real enchantment
-                        int level = compound.getInt(e);
-                        if (level > maxLevel || level < 1 || isInvalidOnItem(enchantmentKey, material)) {
-                            compound.remove(e);
-                            changed = true;
-                        }
                     }
                 }
             }

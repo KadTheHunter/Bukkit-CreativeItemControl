@@ -6,6 +6,9 @@ import de.cubeside.nmsutils.NMSUtils;
 import de.cubeside.nmsutils.nbt.CompoundTag;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,11 @@ public class Main extends JavaPlugin implements Listener {
         yamlConfig = new YamlConfiguration();
         try {
             yamlConfig.load(configFile);
+
+            InputStream defConfigStream = getResource("config.yml");
+            if (defConfigStream != null) {
+                yamlConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
+            }
         } catch (IOException | InvalidConfigurationException e) {
             getLogger().log(Level.SEVERE, "Could not load config file: " + e.getMessage());
             if (configFile.isFile()) {

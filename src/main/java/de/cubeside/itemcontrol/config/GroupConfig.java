@@ -32,8 +32,6 @@ import de.cubeside.itemcontrol.checks.CheckFireworkExplosion;
 import de.cubeside.itemcontrol.checks.CheckFireworks;
 import de.cubeside.itemcontrol.checks.CheckFood;
 import de.cubeside.itemcontrol.checks.CheckGlider;
-import de.cubeside.itemcontrol.checks.CheckHideAdditionalTooltip;
-import de.cubeside.itemcontrol.checks.CheckHideTooltip;
 import de.cubeside.itemcontrol.checks.CheckInstrument;
 import de.cubeside.itemcontrol.checks.CheckIntangibleProjectile;
 import de.cubeside.itemcontrol.checks.CheckItemModel;
@@ -58,15 +56,15 @@ import de.cubeside.itemcontrol.checks.CheckRepairCost;
 import de.cubeside.itemcontrol.checks.CheckRepairable;
 import de.cubeside.itemcontrol.checks.CheckStoredEnchantments;
 import de.cubeside.itemcontrol.checks.CheckSuspiciousStewEffects;
-import de.cubeside.itemcontrol.checks.CheckTool;
-import de.cubeside.itemcontrol.checks.CheckTooltipStyle;
-import de.cubeside.itemcontrol.checks.CheckTrim;
+import de.cubeside.itemcontrol.checks.CheckTooltipDisplay;
 import de.cubeside.itemcontrol.checks.CheckUnbreakable;
 import de.cubeside.itemcontrol.checks.CheckUseCooldown;
 import de.cubeside.itemcontrol.checks.CheckUseRemainder;
 import de.cubeside.itemcontrol.checks.CheckWritableBookContent;
 import de.cubeside.itemcontrol.checks.CheckWrittenBookContent;
 import de.cubeside.itemcontrol.checks.ComponentCheck;
+import de.cubeside.itemcontrol.checks.GenericCheckVariant;
+import de.cubeside.itemcontrol.checks.GenericSimpleCheck;
 import de.cubeside.itemcontrol.util.ConfigUtil;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,12 +80,15 @@ import org.bukkit.configuration.ConfigurationSection;
 public class GroupConfig {
     @SuppressWarnings("unchecked")
     private static Supplier<ComponentCheck>[] COMPONENT_CHECKS = new Supplier[] {
+            GenericSimpleCheck.createFor("attack_range"),
             CheckAttributeModifiers::new,
             CheckBannerPatterns::new,
             CheckBaseColor::new,
             CheckBees::new,
             CheckBlockEntityData::new,
             CheckBlockState::new,
+            GenericSimpleCheck.createFor("blocks_attacks"),
+            GenericSimpleCheck.createFor("break_sound"),
             CheckBucketEntityData::new,
             CheckBundleContents::new,
             CheckCanBreak::new,
@@ -101,6 +102,7 @@ public class GroupConfig {
             CheckCustomName::new,
             CheckDamage::new,
             CheckDamageResistant::new,
+            GenericSimpleCheck.createFor("damage_type"),
             CheckDeathProtection::new,
             CheckDebugStickState::new,
             CheckDyedColor::new,
@@ -113,13 +115,12 @@ public class GroupConfig {
             CheckFireworks::new,
             CheckFood::new,
             CheckGlider::new,
-            CheckHideAdditionalTooltip::new,
-            CheckHideTooltip::new,
             CheckInstrument::new,
             CheckIntangibleProjectile::new,
             CheckItemModel::new,
             CheckItemName::new,
             CheckJukeboxPlayable::new,
+            GenericSimpleCheck.createFor("kinetic_weapon"),
             CheckLock::new,
             CheckLodestoneTracker::new,
             CheckLore::new,
@@ -128,10 +129,15 @@ public class GroupConfig {
             CheckMapId::new,
             CheckMaxDamage::new,
             CheckMaxStackSize::new,
+            GenericSimpleCheck.createFor("minimum_attack_charge"),
             CheckNoteBlockSound::new,
             CheckOminousBottleAmplifier::new,
+            GenericSimpleCheck.createFor("piercing_weapon"),
             CheckPotDecorations::new,
             CheckPotionContents::new,
+            GenericSimpleCheck.createFor("potion_duration_scale"),
+            GenericSimpleCheck.createFor("provides_banner_patterns"),
+            GenericSimpleCheck.createFor("provides_trim_material"),
             CheckProfile::new,
             CheckRarity::new,
             CheckRecipes::new,
@@ -139,14 +145,43 @@ public class GroupConfig {
             CheckRepairCost::new,
             CheckStoredEnchantments::new,
             CheckSuspiciousStewEffects::new,
-            CheckTool::new,
-            CheckTooltipStyle::new,
-            CheckTrim::new,
+            GenericSimpleCheck.createFor("swing_animation"),
+            GenericSimpleCheck.createFor("tool"),
+            CheckTooltipDisplay::new,
+            GenericSimpleCheck.createFor("tooltip_style"),
+            GenericSimpleCheck.createFor("trim", true),
             CheckUnbreakable::new,
             CheckUseCooldown::new,
+            GenericSimpleCheck.createFor("use_effects"),
             CheckUseRemainder::new,
+            GenericSimpleCheck.createFor("weapon"),
             CheckWritableBookContent::new,
             CheckWrittenBookContent::new,
+
+            GenericCheckVariant.createFor("axolotl/variant"),
+            GenericCheckVariant.createFor("cat/collar"),
+            GenericCheckVariant.createFor("cat/variant"),
+            GenericCheckVariant.createFor("chicken/variant"),
+            GenericCheckVariant.createFor("cow/variant"),
+            GenericCheckVariant.createFor("fox/variant"),
+            GenericCheckVariant.createFor("frog/variant"),
+            GenericCheckVariant.createFor("horse/variant"),
+            GenericCheckVariant.createFor("llama/variant"),
+            GenericCheckVariant.createFor("mooshroom/variant"),
+            GenericCheckVariant.createFor("painting/variant"),
+            GenericCheckVariant.createFor("parrot/variant"),
+            GenericCheckVariant.createFor("pig/variant"),
+            GenericCheckVariant.createFor("rabbit/variant"),
+            GenericCheckVariant.createFor("salmon/size"),
+            GenericCheckVariant.createFor("sheep/color"),
+            GenericCheckVariant.createFor("shulker/color"),
+            GenericCheckVariant.createFor("tropical_fish/base_color"),
+            GenericCheckVariant.createFor("tropical_fish/pattern"),
+            GenericCheckVariant.createFor("tropical_fish/pattern_color"),
+            GenericCheckVariant.createFor("villager/variant"),
+            GenericCheckVariant.createFor("wolf/collar"),
+            GenericCheckVariant.createFor("wolf/sound_variant"),
+            GenericCheckVariant.createFor("wolf/variant")
     };
 
     private String permission;

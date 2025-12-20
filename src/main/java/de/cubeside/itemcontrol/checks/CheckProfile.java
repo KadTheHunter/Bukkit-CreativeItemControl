@@ -18,6 +18,7 @@ public class CheckProfile implements ComponentCheck {
     private static final NamespacedKey KEY = NamespacedKey.fromString("minecraft:profile");
 
     private boolean allow;
+    private boolean allowLocalTextureOverride;
 
     @Override
     public NamespacedKey getComponentKey() {
@@ -28,6 +29,7 @@ public class CheckProfile implements ComponentCheck {
     public void loadConfig(ConfigurationSection section) {
         ConfigurationSection data = ConfigUtil.getOrCreateSection(section, KEY.asMinimalString());
         allow = ConfigUtil.getOrCreate(data, "allow", true);
+        allowLocalTextureOverride = ConfigUtil.getOrCreate(data, "allowLocalTextureOverride", false);
     }
 
     @Override
@@ -52,6 +54,20 @@ public class CheckProfile implements ComponentCheck {
                 changed = true;
             } else if (id != null) {
                 nameOrId = true;
+            }
+            if (!allowLocalTextureOverride) {
+                if (compound.containsKey("texture")) {
+                    compound.remove("texture");
+                    changed = true;
+                }
+                if (compound.containsKey("cape")) {
+                    compound.remove("cape");
+                    changed = true;
+                }
+                if (compound.containsKey("model")) {
+                    compound.remove("model");
+                    changed = true;
+                }
             }
             ListTag properties = compound.getList("properties");
             if (!nameOrId) {

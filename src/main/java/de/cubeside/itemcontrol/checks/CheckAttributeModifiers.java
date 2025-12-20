@@ -18,7 +18,9 @@ public class CheckAttributeModifiers implements ComponentCheck {
 
     private HashSet<NamespacedKey> allowed = new HashSet<>();
     private boolean allowAll;
-    private boolean allowHidden;
+
+    private boolean allowModifyDisplay;
+    private int displayMaxCustomNameLength;
 
     @Override
     public NamespacedKey getComponentKey() {
@@ -29,7 +31,8 @@ public class CheckAttributeModifiers implements ComponentCheck {
     public void loadConfig(ConfigurationSection section) {
         ConfigurationSection data = ConfigUtil.getOrCreateSection(section, KEY.asMinimalString());
         allowAll = ConfigUtil.getOrCreate(data, "allow_all", false);
-        allowHidden = ConfigUtil.getOrCreate(data, "allow_hidden", false);
+        allowModifyDisplay = ConfigUtil.getOrCreate(data, "allow_modify_display", false);
+        displayMaxCustomNameLength = ConfigUtil.getOrCreate(data, "display_max_custom_name_length", 1000);
         allowed.clear();
         boolean rewriteAllow = false;
         for (String s : ConfigUtil.getOrCreate(data, "allow", List.of())) {
@@ -60,39 +63,23 @@ public class CheckAttributeModifiers implements ComponentCheck {
     @Override
     public boolean enforce(GroupConfig group, Material material, CompoundTag itemComponentsTag, String key) {
         boolean changed = false;
-        CompoundTag compound = itemComponentsTag.getCompound(key);
-        if (compound != null) {
-            if (!allowHidden) {
-                if (compound.containsKey("show_in_tooltip")) {
-                    compound.remove("show_in_tooltip");
-                    changed = true;
-                }
+        ListTag modifiersList = itemComponentsTag.getList(key);
+        if (modifiersList != null) {
+            if (!allowAll) {
+                changed |= filterModifiers(group, modifiersList);
             }
-            if (allowAll) {
-                return changed;
-            }
-            ListTag modifiersList = compound.getList("modifiers");
-            if (modifiersList != null) {
-                changed |= filterModifiers(modifiersList);
-                if (modifiersList.isEmpty()) {
-                    itemComponentsTag.remove(key);
-                    changed = true;
-                }
+            if (modifiersList.isEmpty()) {
+                itemComponentsTag.remove(key);
+                changed = true;
             }
         } else {
-            ListTag modifiersList = itemComponentsTag.getList(key);
-            if (modifiersList != null) {
-                changed |= filterModifiers(modifiersList);
-                if (modifiersList.isEmpty()) {
-                    itemComponentsTag.remove(key);
-                    changed = true;
-                }
-            }
+            itemComponentsTag.remove(key);
+            changed = true;
         }
         return changed;
     }
 
-    private boolean filterModifiers(ListTag modifiersList) {
+    private boolean filterModifiers(GroupConfig group, ListTag modifiersList) {
         boolean changed = false;
         for (int i = modifiersList.size() - 1; i >= 0; i--) {
             CompoundTag tag = modifiersList.getCompound(i);
@@ -100,11 +87,30 @@ public class CheckAttributeModifiers implements ComponentCheck {
                 modifiersList.remove(i);
                 changed = true;
             } else {
+                if (tag.containsKey("display")) {
+                    if (!allowModifyDisplay) {
+                        tag.remove("display");
+                        changed = true;
+                    } else if (displayMaxCustomNameLength <= 0) {
+                        CompoundTag displayTag = tag.getCompound("display", false);
+                        if (displayTag != null && (displayTag.containsKey("value") || "override".equals(displayTag.getString("type")))) {
+                            tag.remove("display");
+                            changed = true;
+                        }
+                    } else {
+                        CompoundTag displayTag = tag.getCompound("display", false);
+                        if (displayTag != null && displayTag.containsKey("value")) {
+                            if (BaseCheckName.enforce(displayTag, "value", true, true, displayMaxCustomNameLength, group.getMaxComponentExpansions())) {
+                                changed = true;
+                            }
+                        }
+                    }
+                }
                 String s = tag.getString("type");
                 if (s == null) {
                     modifiersList.remove(i);
                     changed = true;
-                } else {
+                } else if (!allowAll) {
                     NamespacedKey key = NamespacedKey.fromString(s);
                     if (key == null || !allowed.contains(key)) {
                         modifiersList.remove(i);

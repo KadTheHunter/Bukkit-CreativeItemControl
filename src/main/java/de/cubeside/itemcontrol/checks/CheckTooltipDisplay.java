@@ -7,8 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class CheckHideTooltip implements ComponentCheck {
-    private static final NamespacedKey KEY = NamespacedKey.fromString("minecraft:hide_tooltip");
+public class CheckTooltipDisplay implements ComponentCheck {
+    private static final NamespacedKey KEY = NamespacedKey.fromString("minecraft:tooltip_display");
 
     private boolean allow;
 
