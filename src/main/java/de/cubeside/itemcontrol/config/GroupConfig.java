@@ -5,9 +5,6 @@ import de.cubeside.itemcontrol.checks.CheckAttributeModifiers;
 import de.cubeside.itemcontrol.checks.CheckBannerPatterns;
 import de.cubeside.itemcontrol.checks.CheckBaseColor;
 import de.cubeside.itemcontrol.checks.CheckBees;
-import de.cubeside.itemcontrol.checks.CheckBlockEntityData;
-import de.cubeside.itemcontrol.checks.CheckBlockState;
-import de.cubeside.itemcontrol.checks.CheckBucketEntityData;
 import de.cubeside.itemcontrol.checks.CheckBundleContents;
 import de.cubeside.itemcontrol.checks.CheckCanBreak;
 import de.cubeside.itemcontrol.checks.CheckCanPlaceOn;
@@ -85,11 +82,11 @@ public class GroupConfig {
             CheckBannerPatterns::new,
             CheckBaseColor::new,
             CheckBees::new,
-            CheckBlockEntityData::new,
-            CheckBlockState::new,
+            GenericSimpleCheck.createFor("block_entity_data"),
+            GenericSimpleCheck.createFor("block_state", true),
             GenericSimpleCheck.createFor("blocks_attacks"),
             GenericSimpleCheck.createFor("break_sound"),
-            CheckBucketEntityData::new,
+            GenericSimpleCheck.createFor("bucket_entity_data", true),
             CheckBundleContents::new,
             CheckCanBreak::new,
             CheckCanPlaceOn::new,
